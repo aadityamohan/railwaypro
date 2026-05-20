@@ -1,0 +1,127 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function getRole() {
+      let u = userDoc();
+      return u != null && u.data != null ? u.data.role : null;
+    }
+
+    function getCompanyId() {
+      let u = userDoc();
+      return u != null && u.data != null ? u.data.companyId : null;
+    }
+
+    function isMember(companyId) {
+      return isAuth() && getCompanyId() == companyId;
+    }
+
+    function isAdmin(companyId) {
+      return isMember(companyId) && getRole() == 'admin';
+    }
+
+    function isManager(companyId) {
+      return isMember(companyId) && getRole() == 'manager';
+    }
+
+    function canWrite(companyId) {
+      return isAdmin(companyId) || isManager(companyId);
+    }
+
+    // Users collection — root level (auth, not company-scoped)
+    match /users/{uid} {
+      allow read: if isAuth();
+      allow write: if request.auth.uid == uid;
+    }
+
+    // Companies collection
+    match /companies/{companyId} {
+      // Public read on the top-level doc so unauthenticated users can validate
+      // an invite code during signup. Sub-collections are still protected below.
+      allow read: if true;
+      allow create: if isAuth();
+      allow update: if isAdmin(companyId);
+      allow delete: if false;
+
+      // Projects
+      match /projects/{id} {
+        allow read: if isMember(companyId);
+        allow create, update: if canWrite(companyId);
+        allow delete: if isAdmin(companyId);
+      }
+
+      // Tasks
+      match /tasks/{id} {
+        allow read: if isMember(companyId);
+        allow create: if isMember(companyId);
+        allow update: if canWrite(companyId) ||
+          (isMember(companyId) && getRole() == 'worker' &&
+           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']));
+        allow delete: if isAdmin(companyId);
+      }
+
+      // Workers
+      match /workers/{id} {
+        allow read: if isMember(companyId);
+        allow create, update: if canWrite(companyId);
+        allow delete: if isAdmin(companyId);
+      }
+
+      // Equipment
+      match /equipment/{id} {
+        allow read: if isMember(companyId);
+        allow create, update: if canWrite(companyId);
+        allow delete: if isAdmin(companyId);
+      }
+
+      // Inventory
+      match /inventory/{id} {
+        allow read: if isMember(companyId);
+        allow create, update: if canWrite(companyId);
+        allow delete: if isAdmin(companyId);
+      }
+
+      // Incidents
+      match /incidents/{id} {
+        allow read: if isMember(companyId);
+        allow create: if isMember(companyId);
+        allow update, delete: if isAdmin(companyId);
+      }
+
+      // Audit logs
+      match /auditLogs/{id} {
+        allow read: if isAdmin(companyId) || isManager(companyId);
+        allow create: if isMember(companyId);
+        allow update, delete: if false;
+      }
+
+      // Safety checklist
+      match /safetyChecklist/{id} {
+        allow read, write: if isMember(companyId) &&
+          (resource == null || resource.data.userId == request.auth.uid);
+      }
+
+      // Weekly reports
+      match /weeklyReports/{id} {
+        allow read: if isMember(companyId);
+        allow write: if canWrite(companyId);
+      }
+
+      // Retailers / Payments
+      match /retailers/{id} {
+        allow read: if isMember(companyId);
+        allow create, update: if canWrite(companyId);
+        allow delete: if isAdmin(companyId);
+      }
+    }
+  }
+}

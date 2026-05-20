@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0a0e17"/>
+  <rect x="32" y="32" width="448" height="448" rx="96" fill="#161d2b"/>
+  <!-- Train body -->
+  <rect x="120" y="200" width="272" height="140" rx="28" fill="#e8b44a"/>
+  <!-- Windows -->
+  <rect x="150" y="224" width="54" height="46" rx="10" fill="#0a0e17"/>
+  <rect x="229" y="224" width="54" height="46" rx="10" fill="#0a0e17"/>
+  <rect x="308" y="224" width="54" height="46" rx="10" fill="#0a0e17"/>
+  <!-- Wheels -->
+  <circle cx="175" cy="346" r="30" fill="#0a0e17"/>
+  <circle cx="175" cy="346" r="16" fill="#e8b44a"/>
+  <circle cx="337" cy="346" r="30" fill="#0a0e17"/>
+  <circle cx="337" cy="346" r="16" fill="#e8b44a"/>
+  <!-- Track -->
+  <rect x="80" y="368" width="352" height="14" rx="7" fill="#2dd4a0"/>
+  <!-- Rail ties -->
+  <rect x="100" y="362" width="16" height="26" rx="4" fill="#1e2840"/>
+  <rect x="152" y="362" width="16" height="26" rx="4" fill="#1e2840"/>
+  <rect x="204" y="362" width="16" height="26" rx="4" fill="#1e2840"/>
+  <rect x="256" y="362" width="16" height="26" rx="4" fill="#1e2840"/>
+  <rect x="308" y="362" width="16" height="26" rx="4" fill="#1e2840"/>
+  <rect x="360" y="362" width="16" height="26" rx="4" fill="#1e2840"/>
+  <!-- Front light -->
+  <circle cx="392" cy="270" r="12" fill="#38c8e8"/>
+  <!-- Speed lines -->
+  <rect x="80" y="230" width="28" height="6" rx="3" fill="#e8b44a" opacity="0.5"/>
+  <rect x="80" y="252" width="20" height="6" rx="3" fill="#e8b44a" opacity="0.3"/>
+  <rect x="80" y="274" width="24" height="6" rx="3" fill="#e8b44a" opacity="0.4"/>
+</svg>
