@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "seed": "node --env-file=.env --import tsx scripts/seed.ts"
+    "seed": "node --env-file=.env --import tsx scripts/seed.ts",
+    "seed:dummy": "node --import tsx scripts/seed-dummy.ts"
   },
   "dependencies": {
     "firebase": "^10.12.0",
